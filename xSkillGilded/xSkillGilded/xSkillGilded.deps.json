@@ -1,0 +1,80 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "xSkillGilded/1.0.0": {
+        "dependencies": {
+          "VSImGui": "0.0.6",
+          "VSImGui_DebugTools": "0.0.6"
+        },
+        "runtime": {
+          "xSkillGilded.dll": {}
+        }
+      },
+      "VSImGui/0.0.6": {
+        "dependencies": {
+          "VSImGui_DebugTools": "0.0.6"
+        },
+        "runtime": {
+          "lib/net7.0/ImGui.NET.dll": {
+            "assemblyVersion": "1.89.9.2",
+            "fileVersion": "1.89.9.2"
+          },
+          "lib/net7.0/ImGuiController_OpenTK.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          },
+          "lib/net7.0/ImGuizmo.NET.dll": {
+            "assemblyVersion": "1.61.0.0",
+            "fileVersion": "1.61.0.0"
+          },
+          "lib/net7.0/ImNodes.NET.dll": {
+            "assemblyVersion": "0.3.0.0",
+            "fileVersion": "0.3.0.0"
+          },
+          "lib/net7.0/ImPlot.NET.dll": {
+            "assemblyVersion": "0.8.0.0",
+            "fileVersion": "0.8.0.0"
+          },
+          "lib/net7.0/VSImGui.dll": {
+            "assemblyVersion": "0.0.6.0",
+            "fileVersion": "0.0.6.0"
+          }
+        }
+      },
+      "VSImGui_DebugTools/0.0.6": {
+        "runtime": {
+          "lib/net7.0/VSImGui_DebugTools.dll": {
+            "assemblyVersion": "0.0.6.0",
+            "fileVersion": "0.0.6.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "xSkillGilded/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "VSImGui/0.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-w3m5Q1gO/EMQliuXDHj1VxTqsiW3AoKb1bnUlq1TiBKoOzBfgn2y7+w8e5/08sw5Ve9+vCKWy/18aGdqxmntmA==",
+      "path": "vsimgui/0.0.6",
+      "hashPath": "vsimgui.0.0.6.nupkg.sha512"
+    },
+    "VSImGui_DebugTools/0.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WZNlfqIuAWPSD1inCTrN/biYUG455xiSFhgR7D93aRQTozwAtb95n+Uxx5PicfwioiPdY1OUX4AIZXTz46148w==",
+      "path": "vsimgui_debugtools/0.0.6",
+      "hashPath": "vsimgui_debugtools.0.0.6.nupkg.sha512"
+    }
+  }
+}

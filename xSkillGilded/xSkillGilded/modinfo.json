@@ -1,0 +1,17 @@
+{
+  "type": "code",
+  "modid": "xskillsgilded",
+  "name": "xSkills Gilded",
+  "authors": [ "MakhamDev, El_Neuman" ],
+  "description": "Add a new, fancy GUI for xSkills.",
+  "version": "1.3.6",
+  "side" : "Universal",
+  "requiredOnClient": true,
+  "requiredOnServer": true,
+  "dependencies": {
+    "game": "",
+    "xlib": "",
+	"xskills": "",
+	"vsimgui": ""
+  }
+}
