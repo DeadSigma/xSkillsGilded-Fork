@@ -1,2 +1,2 @@
 # xSkills Gilded
-Fancy GUI for xSkills mod.
+Fancy forked GUI for xSkills mod. ny Makham
