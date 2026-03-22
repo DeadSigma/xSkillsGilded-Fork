@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Vintagestory.API.Client;
@@ -91,14 +92,14 @@ namespace xSkillGilded {
 
                 api.StoreModConfig<ModConfig>(config, configFileName);
 
-            } catch (Exception e) {
+            } catch (Exception) {
                 config = new ModConfig();
             }
 
             //api.Logger.Debug("CONFIG: " + config.ToString());
 
-            api.Input.RegisterHotKey("xSkillGilded", "Show/Hide Skill Dialog - Gilded", GlKeys.G, HotkeyType.GUIOrOtherControls);
-            api.Input.SetHotKeyHandler("xSkillGilded", Toggle);
+            api.Input.RegisterHotKey("xSkillGilded_v2", "Show/Hide Skill Dialog - Gilded", GlKeys.O, HotkeyType.GUIOrOtherControls);
+            api.Input.SetHotKeyHandler("xSkillGilded_v2", Toggle);
 
             imguiModSystem = api.ModLoader.GetModSystem<ImGuiModSystem>();
             imguiModSystem.Draw   += Draw;
@@ -129,15 +130,15 @@ namespace xSkillGilded {
 
             effectBox = new(api);
 			
-// Закрытие окна по Esc — правильный тип события KeyEvent
-api.Event.KeyDown += (KeyEvent e) =>
-{
-    if (e.KeyCode == (int)GlKeys.Escape && isOpen && !api.Input.KeyboardKeyState[(int)GlKeys.ControlLeft])
-    {
-        Close();
-        e.Handled = true;       // ← Важно: помечаем событие как обработанное
-    }
-};
+            // Закрытие окна по Esc — правильный тип события KeyEvent
+            api.Event.KeyDown += (KeyEvent e) =>
+            {
+                if (e.KeyCode == (int)GlKeys.Escape && isOpen && !api.Input.KeyboardKeyState[(int)GlKeys.ControlLeft])
+                {
+                    Close();
+                    e.Handled = true;       // ← Важно: помечаем событие как обработанное
+                }
+            };
         }
 
         public void initFonts(HashSet<string> fonts, HashSet<int> sizes) { // UNUSED
@@ -149,17 +150,27 @@ api.Event.KeyDown += (KeyEvent e) =>
             if(isReady) api.Event.UnregisterGameTickListener(checkAPIID);
         }
 
-        public void onCheckLevel(float dt) {
-            if(previousLevels == null) return;
-            if(!config.lvPopupEnabled) return;
+        public void onCheckLevel(float dt)
+        {
+            if (previousLevels == null) return;
+            if (!config.lvPopupEnabled) return;
 
-            foreach(PlayerSkill skill in previousLevels.Keys) {
+            foreach (PlayerSkill skill in previousLevels.Keys.ToList())
+            { // Добавлен .ToList()
                 int currentLevel = skill.Level;
 
-                if(currentLevel > previousLevels[skill]) {
-                    LevelPopup levelPopup = new(api, skill);
-                    api.Gui.PlaySound(new AssetLocation("xskillgilded", "sounds/levelup.ogg"), false, .3f);
-                    api.Logger.Debug($"{skill.Skill.Name}, {skill.Skill.Id} Level up");
+                if (currentLevel > previousLevels[skill])
+                {
+                    try
+                    {
+                        LevelPopup levelPopup = new(api, skill);
+                        api.Gui.PlaySound(new AssetLocation("xskillgilded", "sounds/levelup.ogg"), false, .3f);
+                        api.Logger.Debug($"{skill.Skill.Name}, {skill.Skill.Id} Level up");
+                    }
+                    catch (Exception ex)
+                    {
+                        api.Logger.Error($"[xSkillGilded] Ошибка при создании LevelPopup: {ex}");
+                    }
                 }
 
                 previousLevels[skill] = currentLevel;
@@ -444,9 +455,10 @@ api.Event.KeyDown += (KeyEvent e) =>
                  | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoBackground;
 
             ImGui.Begin("xSkill Gilded", flags);
-            
-            drawImage(Sprite("elements", "bg"), 0, 0, windowWidth, windowHeight);
-            float padd = _ui(contentPadding);
+            try
+            {
+                drawImage(Sprite("elements", "bg"), 0, 0, windowWidth, windowHeight);
+                float padd = _ui(contentPadding);
             float contentWidth = windowWidth - _ui(tooltipWidth) - padd * 2;
             float deltaTime    = stopwatch.ElapsedMilliseconds / 1000f;
             stopwatch.Restart();
@@ -614,15 +626,21 @@ api.Event.KeyDown += (KeyEvent e) =>
 
             windowPosX = windowX + abx;
             windowPosY = windowY + aby;
-            ImGui.SetCursorPos(new(abx, aby));
-            ImGui.BeginChild("Ability", new(abw, abh), false, flags);
-                float offx = ofmx + abw / 2;
-                float offy = ofmy + abh / 2;
+
+                ImGui.SetCursorPos(new(abx, aby));
+
+                // Выносим переменную сюда, чтобы она была доступна во всем методе
                 AbilityButton _hoveringButton = null;
-                
-                float lvx = _ui(64);
-                
-                for(int i = 1; i < levelRequirementBars.Count; i++) {
+
+                ImGui.BeginChild("Ability", new(abw, abh), false, flags);
+                try
+                {
+                    float offx = ofmx + abw / 2;
+                    float offy = ofmy + abh / 2;
+
+                    float lvx = _ui(64);
+
+                    for (int i = 1; i < levelRequirementBars.Count; i++) {
                     float lv = levelRequirementBars[i];
                     float _y = offy + _ui(abiliyPageHeight / 2 - i * (buttonHeight + buttonPad) + buttonPad / 2);
 
@@ -760,15 +778,19 @@ api.Event.KeyDown += (KeyEvent e) =>
                     foreach (Requirement req in requirements)
                         drawRequirementHighlight(hoveringButton, req, offx, offy);
 
+                    } // конец проверки ExclusiveAbilityRequirement
+                }
+                finally
+                {
+                    ImGui.EndChild(); // Гарантированное закрытие РЕАЛЬНОГО окна
                 }
 
-            ImGui.EndChild();            
-            windowPosX = windowX;
-            windowPosY = windowY;
-            #endregion
+                windowPosX = windowX;
+                windowPosY = windowY;
+                #endregion
 
-            #region Skills Description
-            float sdx = padd + _ui(16);
+                #region Skills Description
+                float sdx = padd + _ui(16);
             float sdy = sky + skh + _ui(16);
             float sdw = _ui(200);
 
@@ -907,15 +929,119 @@ api.Event.KeyDown += (KeyEvent e) =>
                         currentTooltip = descCurrTier; 
                     }
 
-                    float h = drawTextVTML(tooltipVTML, tooltipX + _ui(8), tooltipY, tooltipW - _ui(16));
-                    tooltipY += Math.Max(h + _ui(16), _ui(160));
+                float h = drawTextVTML(tooltipVTML, tooltipX + _ui(8), tooltipY, tooltipW - _ui(16));
 
-                    drawSetColor(new(104/255f, 76/255f, 60/255f, 1));
-                    drawImage(Sprite("elements", "tooltip_sep"), tooltipX + _ui(8), tooltipY, tooltipW - _ui(16), 1);
+                // 1. ОПРЕДЕЛЯЕМ СПИСКИ ПЕРКОВ (Коробочки с категориями)
+                var chanceAbilities = new System.Collections.Generic.HashSet<string>
+                    {
+                        "magnetichook", "doublehook", "baitmaster", "strongline",
+                        "carefuldigger", "carefullumberjack", "carefulminer",
+                        "cultivatedseeds", "stonecutter", "feeder", "duplicator",
+                        "jackpot", "happymeal", "finishingtouch", "fastpotter"
+                    };
+
+                var bonusAbilities = new System.Collections.Generic.HashSet<string>
+                    {
+                        "goodbait", "greenthumb", "demetersbless", "gatherer", "orchardist",
+                        "claydigger", "peatcutter", "saltpeterdigger", "golddigger",
+                        "lumberjack", "moreladders", "stonebreaker", "oreminer",
+                        "gemstoneminer", "butcher", "furrier", "bonebreaker",
+                        "looter", "salvager", "dilution", "longlife", "hammerexpert",
+                        "shovelexpert", "axeexpert", "pickaxeexpert", "fastfood"
+                    };
+
+                var damageAbilities = new System.Collections.Generic.HashSet<string>
+                    {
+                        "swordsman", "archer", "spearman", "tank", "hunter", "toolmastery"
+                    };
+
+                var maxBonusAbilities = new System.Collections.Generic.HashSet<string>
+                    {
+                        "fishfilleter"
+                    };
+
+                // --- НАШ КАСТОМНЫЙ ТЕКСТ (ОТРИСОВКА ВНИЗУ) ---
+                float extraH = 0;
+                // Создаем список для хранения всех строчек текста
+                List<string> customLines = new List<string>();
+
+                if (tier > 0 && ability != null)
+                {
+                    string abilityName = ability.Ability.Name;
+
+                        // Проверяем, есть ли перк хоть в одной из категорий
+                        if (chanceAbilities.Contains(abilityName) || bonusAbilities.Contains(abilityName) || damageAbilities.Contains(abilityName) || maxBonusAbilities.Contains(abilityName))
+                        {
+                            int baseVal = ability.Ability.ValuesPerTier > 0 ? ability.Ability.Value(tier, 0) : 0;
+                            int bonusValue = ability.Ability.ValuesPerTier > 1 ? ability.Ability.Value(tier, 1) : 0;
+                            int bonusFromLevel = ability.PlayerSkill.Level * bonusValue;
+                            int currentVal = ability.SkillDependentValue();
+
+                            string primaryText = null;
+
+                        if (chanceAbilities.Contains(abilityName))
+                        {
+                            primaryText = Vintagestory.API.Config.Lang.Get("xskills:perk-chance", currentVal, baseVal, bonusFromLevel);
+                        }
+                        else if (bonusAbilities.Contains(abilityName))
+                        {
+                            primaryText = Vintagestory.API.Config.Lang.Get("xskills:perk-bonus", currentVal, baseVal, bonusFromLevel);
+                        }
+                        else if (damageAbilities.Contains(abilityName))
+                        {
+                            primaryText = Vintagestory.API.Config.Lang.Get("xskills:perk-damage", currentVal, baseVal, bonusFromLevel);
+                        }
+                        else if (maxBonusAbilities.Contains(abilityName))
+                        {
+                            primaryText = Vintagestory.API.Config.Lang.Get("xskills:perk-chance", currentVal, baseVal, bonusFromLevel);
+                            int maxBonus = Math.Max(1, Math.Min(5, ability.PlayerSkill.Level));
+                            string secondaryText = Vintagestory.API.Config.Lang.Get("xskills:perk-maxbonus", maxBonus);
+
+                            // Разбиваем текст по символу переноса (\n) и добавляем в список
+                            customLines.AddRange(primaryText.Split('\n'));
+                            customLines.AddRange(secondaryText.Split('\n'));
+                        }
+
+                        // Добавляем текст для остальных перков (если это не maxBonus)
+                        if (primaryText != null && !maxBonusAbilities.Contains(abilityName))
+                        {
+                            customLines.AddRange(primaryText.Split('\n'));
+                        }
+
+                        // ВЫЧИСЛЯЕМ ВЫСОТУ: Количество строк * (высота шрифта + отступ 4)
+                        extraH = customLines.Count * (fSubtitle.getLineHeight() + _ui(4));
+                    }
+                }
+
+                // Вычисляем финальный шаг Y (учитывая минимальную высоту тултипа 160)
+                float stepY = Math.Max(h + extraH + _ui(16), _ui(160));
+
+                // Если у нас есть текст, прижимаем его к нижней линии
+                if (customLines.Count > 0)
+                {
+                    // Отступаем от будущей нижней линии вверх на высоту всего нашего текста + 8 пикселей
+                    float customTextY = tooltipY + stepY - extraH - _ui(8);
+
+                    drawSetColor(c_grey);
+
+                    // Рисуем каждую строчку отдельно! (Защита от вылезания за края)
+                    foreach (string line in customLines)
+                    {
+                        drawTextFont(fSubtitle, line, tooltipX + _ui(8), customTextY);
+                        customTextY += fSubtitle.getLineHeight() + _ui(4);
+                    }
+
                     drawSetColor(c_white);
-                    tooltipY += _ui(16);
+                }
+                // ------------------------------------------------
 
-                    if (tier < tierMax) {
+                tooltipY += stepY;
+
+                drawSetColor(new(104 / 255f, 76 / 255f, 60 / 255f, 1));
+                drawImage(Sprite("elements", "tooltip_sep"), tooltipX + _ui(8), tooltipY, tooltipW - _ui(16), 1);
+                drawSetColor(c_white);
+
+                if (tier < tierMax) {
                         int requiredLevel = ability.Ability.RequiredLevel(tier + 1);
                         string reqText    = string.Format(Lang.GetUnformatted("xskillgilded:abilityLevelRequired"), skillName, requiredLevel);
 
@@ -972,9 +1098,16 @@ api.Event.KeyDown += (KeyEvent e) =>
             // if(_hoveringID != null && _hoveringID != hoveringID) api.Gui.PlaySound("tick", false, .5f); // too annoying
             hoveringID = _hoveringID;
 
-            drawImage9patch(Sprite("elements", "frame"), 0, 0, windowWidth, windowHeight, 60);
-
-            ImGui.End();
+            }
+            catch (Exception ex)
+            {
+                api.Logger.Error($"[xSkillGilded] Ошибка в Draw: {ex}");
+            }
+            finally
+            {
+                drawImage9patch(Sprite("elements", "frame"), 0, 0, windowWidth, windowHeight, 60);
+                ImGui.End(); // Гарантированное закрытие главного окна
+            }
 
             return CallbackGUIStatus.GrabMouse;
         }
@@ -1022,20 +1155,36 @@ api.Event.KeyDown += (KeyEvent e) =>
                 v[i] = str;
             }
 
-            try {
-                switch (vpt) {
-                    case 1: return String.Format(descBase, v[0]);
-                    case 2: return String.Format(descBase, v[0], v[1]);
-                    case 3: return String.Format(descBase, v[0], v[1], v[2]);
-                    case 4: return String.Format(descBase, v[0], v[1], v[2], v[3]);
-                    case 5: return String.Format(descBase, v[0], v[1], v[2], v[3], v[4]);
-                    case 6: return String.Format(descBase, v[0], v[1], v[2], v[3], v[4], v[5]);
-                    case 7: return String.Format(descBase, v[0], v[1], v[2], v[3], v[4], v[5], v[6]);
-                    case 8: return String.Format(descBase, v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]);
-                }
-            } catch {
-                return descBase;
+            // --- ФИКС ДЛЯ ПЕРКОВ БРОНИ И СЛОЖНЫХ ОПИСАНИЙ ---
+            // Создаем массив с запасом (10 элементов), чтобы String.Format 
+            // никогда не крашился из-за нехватки аргументов.
+            object[] args = new object[10];
+            for (int i = 0; i < 10; i++) args[i] = "";
+
+            // Вставляем наши раскрашенные значения (10% > 15%)
+            for (int i = 0; i < vpt; i++) args[i] = v[i];
+
+            // Вручную подставляем списки характеристик для брони из файлов локализации
+            if (ability.Name == "heavyarmorexpert")
+            {
+                args[2] = Vintagestory.API.Config.Lang.Get("xskills:armor-heavy-dec");
+                args[3] = Vintagestory.API.Config.Lang.Get("xskills:armor-heavy-inc");
             }
+            else if (ability.Name == "lightarmorexpert")
+            {
+                args[1] = Vintagestory.API.Config.Lang.Get("xskills:armor-light-inc");
+            }
+
+            try
+            {
+                // Передаем весь массив разом. String.Format возьмет только то, что ему нужно!
+                descBase = String.Format(descBase, args);
+            }
+            catch
+            {
+                // Игнорируем ошибки форматирования
+            }
+            // --------------------------------------------------------
 
             return descBase;
         }
@@ -1086,7 +1235,7 @@ api.Event.KeyDown += (KeyEvent e) =>
 
             float currXp = (float)Math.Round(skill.Experience);
             float nextXp = (float)Math.Round(skill.RequiredExperience);
-            float xpProgress = currXp / nextXp;
+            float xpProgress = nextXp > 0 ? currXp / nextXp : 1f;
 
             drawSetColor(c_grey);
             drawTextFont(fSubtitle, $"{currXp}/{nextXp} xp", x + w - _ui(8), y, HALIGN.Right);
