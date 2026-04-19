@@ -115,15 +115,22 @@ namespace xSkillGilded {
             ElementBounds window = api.Gui.WindowBounds;
             float screenWidth  = (float)window.OuterWidth;
             float screenHeight = (float)window.OuterHeight;
-            
+
             Vector2 mousePos = ImGui.GetMousePos();
             float mx = mousePos.X;
             float my = mousePos.Y;
             float ww = windowWidth - _ui(48);
             float hh = _ui(240);
 
-            float wx = Math.Clamp(mx + _ui(16), 0, screenWidth - windowWidth);
-            float wy = Math.Clamp(my + _ui(32), 0, screenHeight - windowHeight);
+            ImGuiViewportPtr viewport = ImGui.GetMainViewport();
+
+            float minX = viewport.Pos.X;
+            float minY = viewport.Pos.Y;
+            float maxX = viewport.Pos.X + viewport.Size.X - windowWidth;
+            float maxY = viewport.Pos.Y + viewport.Size.Y - windowHeight;
+
+            float wx = Math.Clamp(mx + _ui(16), minX, maxX);
+            float wy = Math.Clamp(my + _ui(32), minY, maxY);
 
             ImGui.SetNextWindowSize(new (windowWidth, windowHeight));
             ImGui.SetNextWindowPos(new (wx, wy));

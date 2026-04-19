@@ -43,12 +43,11 @@ namespace xSkillGilded {
         {
             if (!showing) return CallbackGUIStatus.DontGrabMouse;
 
-            ElementBounds window = api.Gui.WindowBounds;
-            float screenWidth = (float)window.OuterWidth;
-            float screenHeight = (float)window.OuterHeight;
+            ImGuiViewportPtr viewport = ImGui.GetMainViewport();
 
-            float wx = screenWidth / 2 - windowWidth / 2;
-            float wy = _ui(8);
+            // Считаем позицию относительно реального положения окна игры на мониторе
+            float wx = viewport.Pos.X + (viewport.Size.X / 2) - (windowWidth / 2);
+            float wy = viewport.Pos.Y + _ui(8);
 
             ImGui.SetNextWindowSize(new(windowWidth, windowHeight));
             ImGui.SetNextWindowPos(new(wx, wy));
