@@ -29,7 +29,7 @@ namespace xSkillGilded {
         private ICoreClientAPI api;
         private ImGuiModSystem imguiModSystem;
 
-        ImFontPtr FTitle;
+       // ImFontPtr FTitle;
 
         XLeveling xLeveling;
         XLevelingClient xLevelingClient;
@@ -438,13 +438,13 @@ namespace xSkillGilded {
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,    0);
             ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding,    0);
-            
-            int windowWidth  = Math.Min(windowBaseWidth,  window.OuterWidthInt  - 128); // 160
-            int windowHeight = Math.Min(windowBaseHeight, window.OuterHeightInt - 128); // 160
-            
-            OpenTK.Mathematics.Vector2 windowCenter = ((ClientPlatformWindows)ScreenManager.Platform).window.Bounds.Center;
-            windowX = (int)windowCenter.X - windowWidth / 2;
-            windowY = (int)windowCenter.Y - windowHeight / 2;
+
+            ImGuiViewportPtr viewport = ImGui.GetMainViewport();
+            int windowWidth = (int)Math.Min(windowBaseWidth, viewport.Size.X - 128);
+            int windowHeight = (int)Math.Min(windowBaseHeight, viewport.Size.Y - 128);
+
+            windowX = (int)(viewport.Pos.X + (viewport.Size.X - windowWidth) / 2);
+            windowY = (int)(viewport.Pos.Y + (viewport.Size.Y - windowHeight) / 2);
 
             windowPosX = windowX;
             windowPosY = windowY;

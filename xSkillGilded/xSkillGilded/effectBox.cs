@@ -32,9 +32,6 @@ namespace xSkillGilded {
         float windowWidth  = _ui(400);
         float windowHeight = _ui(240);
 
-        string currentTooltip;
-        List<VTMLblock> tooltipVTML;
-
         public EffectBox(ICoreClientAPI api) {
             this.api = api;
             api.Event.RegisterRenderer(this, EnumRenderStage.Ortho);
