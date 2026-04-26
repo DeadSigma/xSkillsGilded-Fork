@@ -29,7 +29,7 @@ namespace xSkillGilded {
         private ICoreClientAPI api;
         private ImGuiModSystem imguiModSystem;
 
-        ImFontPtr FTitle;
+        //ImFontPtr FTitle;
 
         XLeveling xLeveling;
         XLevelingClient xLevelingClient;
