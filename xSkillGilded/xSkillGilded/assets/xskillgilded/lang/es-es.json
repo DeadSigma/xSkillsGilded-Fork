@@ -1,0 +1,20 @@
+{
+    "specialization": "Especialización",
+    "pointsAvailable": "{0} puntos disponibles",
+    "unlearnPoints": "Puntos de desaprendizaje",
+    "expBonusTitle": "Bonificación de experiencia",
+    "expBonusDesc": "Bonificación/penalización de puntos de experiencia de tu clase actual.<br><br>Efecto de clase: {0}<br>Efecto total: {1}<br>",
+    "unlearnTitle": "Desaprender",
+    "unlearnDesc": "Puedes desaprender una habilidad <font color=\"feae34\">haciendo clic derecho</font> en la habilidad.<br><br>Desaprender requiere un punto de desaprendizaje, que puede obtenerse usando ciertos objetos (consulta el manual para más detalles).<br><br>Desaprender tiene un tiempo de reutilización de <font color=\"feae34\">{0}</font> antes de que puedas volver a desaprender.",
+    "sparringTitle": "Modo de entrenamiento",
+    "sparringDesc": "El modo de entrenamiento permite que dos jugadores luchen entre sí sin perder puntos de experiencia. Ambos jugadores deben activar el modo de entrenamiento antes del combate.",
+    "abilityLevelRequired": "Requiere {0} Nivel {1}",
+    "actionLearn": "Aprender",
+    "actionUnlearn": "Desaprender",
+    "lvPopupEnabled": "Activar ventana emergente de subida de nivel",
+    "effectBoxEnabled": "Activar cuadro de efectos",
+    "effectBoxOriginX": "Posición X del cuadro de efectos",
+    "effectBoxOriginY": "Posición Y del cuadro de efectos",
+    "effectBoxSize": "Tamaño del cuadro de efectos",
+    "effectBoxOrientation": "Orientación del cuadro de efectos"
+}

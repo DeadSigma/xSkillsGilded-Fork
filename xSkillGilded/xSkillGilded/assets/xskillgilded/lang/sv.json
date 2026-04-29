@@ -1,0 +1,20 @@
+{
+    "specialization": "Specialisering",
+    "pointsAvailable": "{0} poäng tillgängliga",
+    "unlearnPoints": "Avlärningspoäng",
+    "expBonusTitle": "Erfarenhetsbonus",
+    "expBonusDesc": "Bonus/straff på erfarenhetspoäng från din nuvarande klass.<br><br>Klasseffekt: {0}<br>Total effekt: {1}<br>",
+    "unlearnTitle": "Avlärning",
+    "unlearnDesc": "Du kan avlära en förmåga genom att <font color=\"feae34\">högerklicka</font> på förmågan.<br><br>Avlärning kräver en avlärningspoäng, som kan fås genom vissa föremål (se handboken för detaljer).<br><br>Avlärning har en nedkylningstid på <font color=\"feae34\">{0}</font> innan du kan göra det igen.",
+    "sparringTitle": "Sparringsläge",
+    "sparringDesc": "Sparringsläge låter två spelare slåss mot varandra utan att förlora erfarenhetspoäng. Båda spelarna måste aktivera sparringsläge före strid.",
+    "abilityLevelRequired": "Kräver {0} Nivå {1}",
+    "actionLearn": "Lär",
+    "actionUnlearn": "Avlär",
+    "lvPopupEnabled": "Aktivera nivåupp-popup",
+    "effectBoxEnabled": "Aktivera effektfönster",
+    "effectBoxOriginX": "Effektfönster position X",
+    "effectBoxOriginY": "Effektfönster position Y",
+    "effectBoxSize": "Effektfönster storlek",
+    "effectBoxOrientation": "Effektfönster orientering"
+}

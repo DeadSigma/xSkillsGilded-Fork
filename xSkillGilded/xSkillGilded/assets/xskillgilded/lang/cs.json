@@ -1,0 +1,20 @@
+{
+    "specialization": "Specializace",
+    "pointsAvailable": "Dostupné {0} body",
+    "unlearnPoints": "Body pro odnaučení",
+    "expBonusTitle": "Bonus zkušeností",
+    "expBonusDesc": "Bonus/postih zkušenostních bodů z vaší aktuální třídy.<br><br>Efekt třídy: {0}<br>Celkový efekt: {1}<br>",
+    "unlearnTitle": "Odnaučení",
+    "unlearnDesc": "Schopnost můžete odnaučit <font color=\"feae34\">kliknutím pravým tlačítkem</font> na schopnost.<br><br>K odnaučení je potřeba bod odnaučení, který lze získat použitím určitých předmětů (podrobnosti viz příručka).<br><br>Odnaučení má <font color=\"feae34\">{0}</font> dobu obnovení, než budete moci znovu odnaučit.",
+    "sparringTitle": "Režim sparingu",
+    "sparringDesc": "Režim sparingu umožňuje dvěma hráčům bojovat mezi sebou bez ztráty zkušenostních bodů. Oba hráči musí režim sparingu zapnout před bojem.",
+    "abilityLevelRequired": "Vyžaduje {0} Úroveň {1}",
+    "actionLearn": "Naučit",
+    "actionUnlearn": "Odnaučit",
+    "lvPopupEnabled": "Povolit vyskakovací okno zvýšení úrovně",
+    "effectBoxEnabled": "Povolit okno efektů",
+    "effectBoxOriginX": "Pozice okna efektů X",
+    "effectBoxOriginY": "Pozice okna efektů Y",
+    "effectBoxSize": "Velikost okna efektů",
+    "effectBoxOrientation": "Orientace okna efektů"
+}

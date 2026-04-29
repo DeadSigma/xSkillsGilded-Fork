@@ -1,0 +1,20 @@
+{
+    "specialization": "专精",
+    "pointsAvailable": "可用 {0} 点数",
+    "unlearnPoints": "遗忘点数",
+    "expBonusTitle": "经验加成",
+    "expBonusDesc": "来自当前职业的经验点数加成/惩罚。<br><br>职业效果：{0}<br>总效果：{1}<br>",
+    "unlearnTitle": "遗忘",
+    "unlearnDesc": "你可以通过<font color=\"feae34\">右键点击</font>技能来遗忘它。<br><br>遗忘需要遗忘点数，可通过使用特定物品获得（详见指南）。<br><br>遗忘后有 <font color=\"feae34\">{0}</font> 冷却时间，之后才能再次遗忘。",
+    "sparringTitle": "切磋模式",
+    "sparringDesc": "切磋模式允许两名玩家互相战斗而不会损失经验点数。战斗前双方玩家都必须启用切磋模式。",
+    "abilityLevelRequired": "需要 {0} 等级 {1}",
+    "actionLearn": "学习",
+    "actionUnlearn": "遗忘",
+    "lvPopupEnabled": "启用升级弹窗",
+    "effectBoxEnabled": "启用效果窗口",
+    "effectBoxOriginX": "效果窗口位置 X",
+    "effectBoxOriginY": "效果窗口位置 Y",
+    "effectBoxSize": "效果窗口大小",
+    "effectBoxOrientation": "效果窗口方向"
+}
