@@ -26,6 +26,11 @@ namespace xSkillGilded {
         public CallbackGUIStatus Draw(float deltaSecnds) {
             if(!isOpen) return CallbackGUIStatus.Closed;
 
+            if (lastLocale != Lang.CurrentLocale)
+            {
+                UpdateLanguageSettings();
+            }
+
             ElementBounds window = api.Gui.WindowBounds;
             IXPlatformInterface xPlatform = api.Forms;
             Size2i size = xPlatform.GetScreenSize();
@@ -183,8 +188,8 @@ namespace xSkillGilded {
             if(!metaPage) {
                 for(int i = 0; i < currentSkills.Count; i++) {
                     PlayerSkill skill = currentSkills[i];
-                    string skillName = skill.Skill.DisplayName;
-                    float skxc = skx + skw / 2;
+                        string skillName = Lang.Get($"xskills:skill-{skill.Skill.Name}");
+                        float skxc = skx + skw / 2;
                     float skww = skw * .5f / 2;
                     Vector4 color = new Vector4(1,1,1,1);
                     Font _fTitle = fSubtitle;
@@ -304,9 +309,9 @@ namespace xSkillGilded {
                     int tier = ability.Tier;
 
                     if(tier > 0) color = c_white;
-                    
-                    string abilityName = button.Ability.Ability.DisplayName;
-                    bool   reqFulfiled = ability.RequirementsFulfilled(tier + 1);
+
+                        string abilityName = button.Name;
+                        bool   reqFulfiled = ability.RequirementsFulfilled(tier + 1);
 
                     if(reqFulfiled) {
                         color = c_lime;
@@ -361,11 +366,22 @@ namespace xSkillGilded {
                     float   bgh = _nameSize.X > bw - _ui(8)? bh : _ui(48);
                     drawImage(Sprite("elements", "abilitybox_name_under"), bx, by + bh - bgh, bw, bgh);
                     drawSetColor(color);
-                    if(_nameSize.X > bw - _ui(8))
-                        drawTextFontWrap(fSubtitle, abilityName, bx + bw / 2, by + bh - _ui(12), HALIGN.Center, VALIGN.Bottom, bw - _ui(8));
-                    else 
-                        drawTextFont(fSubtitle, abilityName, bx + bw / 2, by + bh - _ui(12), HALIGN.Center, VALIGN.Bottom);
-                    drawSetColor(c_white);
+
+                        try
+                        {
+                            if (_nameSize.X > bw - _ui(8))
+                                drawTextFontWrap(fSubtitle, abilityName, bx + bw / 2, by + bh - _ui(12), HALIGN.Center, VALIGN.Bottom, bw - _ui(8));
+                            else
+                                drawTextFont(fSubtitle, abilityName, bx + bw / 2, by + bh - _ui(12), HALIGN.Center, VALIGN.Bottom);
+                        }
+                        catch (Exception)
+                        {
+                            // Если функция переноса крашится (часто бывает с fallback-шрифтами), 
+                            // спасаем интерфейс и рисуем текст обычной строкой
+                            drawTextFont(fSubtitle, abilityName, bx + bw / 2, by + bh - _ui(12), HALIGN.Center, VALIGN.Bottom);
+                        }
+
+                        drawSetColor(c_white);
 
                     float progress = ability.Tier / (float)ability.Ability.MaxTier;
                     float prh = _ui(6);
@@ -533,8 +549,8 @@ namespace xSkillGilded {
 
                 } else if(_hoveringButton != null) {
                     PlayerAbility ability = _hoveringButton.Ability;
-                    
-                    string name      = ability.Ability.DisplayName;
+
+                    string name = _hoveringButton.Name;
                     string skillName = ability.Ability.Skill.DisplayName;
                     int    tier      = ability.Tier;
                     int    tierMax   = ability.Ability.MaxTier;
@@ -856,7 +872,9 @@ namespace xSkillGilded {
 
             float expBonus = skill.Skill.GetExperienceMultiplier(skill.PlayerSkillSet, false) - 1f;
             if(expBonus != 0f) {
-                string bonusText = (expBonus > 0? "+" : "-") + Math.Round(expBonus * 100f) + "%";
+
+                string bonusText = (expBonus > 0 ? "+" : "-") + Math.Round(expBonus * 100f) + "%%";
+
                 drawSetColor(expBonus > 0? c_lime : c_red);
                 Vector2 bonusTextSize = drawTextFont(fSubtitle, bonusText, x + w, y, HALIGN.Left);
 
@@ -951,8 +969,8 @@ namespace xSkillGilded {
 
     class AbilityButton {
         public string RawName        { get; set; }
-        public string Name           { get; set; }
         public LoadedTexture Texture { get; set; }
+        public string Name => Lang.Get($"xskills:ability-{RawName}");
         public PlayerAbility Ability { get; set; }
         public List<VTMLblock> Description { get; set; }
 
@@ -968,7 +986,6 @@ namespace xSkillGilded {
         public AbilityButton(PlayerAbility ability) {
             Ability = ability;
             RawName = ability.Ability.Name;
-            Name    = ability.Ability.DisplayName;
 
             string _icoPath = $"xskillgilded:textures/gui/skilltree/abilityicon/{RawName}.png";
             Texture = resourceLoader.Sprite(_icoPath);

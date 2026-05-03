@@ -25,7 +25,7 @@ namespace xSkillGilded {
     public partial class xSkillGraphicalUI : ModSystem {
         public static ModConfig config;
         public const string configFileName = "xskillsgilded.json";
-
+        private string lastLocale = "";
         private ICoreClientAPI api;
         private ImGuiModSystem imguiModSystem;
 
@@ -78,7 +78,35 @@ namespace xSkillGilded {
 
         public override bool ShouldLoad(EnumAppSide forSide) { return forSide == EnumAppSide.Client; }
         public override double ExecuteOrder() { return 1; }
-        
+        private void UpdateLanguageSettings()
+        {
+            lastLocale = Lang.CurrentLocale;
+
+            // 1. Проверка на не-латиницу и "проблемные" языки
+            bool isNonLatin = Lang.UsesNonLatinCharacters(lastLocale);
+            string[] badScarabLanguages = new string[] { "pl", "cs", "sk", "de", "nl", "sv-se" };
+            bool isBadScarab = badScarabLanguages.Contains(lastLocale);
+
+            useInternalTextDrawer = isNonLatin || isBadScarab;
+
+            if (!useInternalTextDrawer)
+            {
+                fTitle.baseLineHeight = ImGui.GetTextLineHeight();
+                fTitleGold.baseLineHeight = ImGui.GetTextLineHeight();
+                fSubtitle.baseLineHeight = ImGui.GetTextLineHeight();
+                fSubtitleGold.baseLineHeight = ImGui.GetTextLineHeight();
+            }
+
+            // Очищаем кэш тултипов, чтобы они тоже обновились
+            currentTooltip = "";
+            hoveringTooltip = null;
+
+            // Пересобираем текущую страницу для обновления кнопок
+            if (!string.IsNullOrEmpty(page))
+            {
+                setPage(page);
+            }
+        }
         public override void StartClientSide(ICoreClientAPI api) {
             this.api = api;
             resourceLoader.setApi(api);
@@ -106,30 +134,7 @@ namespace xSkillGilded {
             fSubtitle     = new Font().LoadedTexture(api, Sprite("fonts", "scarab_small"), FontData.SCARAB_SMALL).setLetterSpacing(1);
             fSubtitleGold = new Font().LoadedTexture(api, Sprite("fonts", "scarab_small_gold"), FontData.SCARAB_SMALL).setLetterSpacing(1).setFallbackColor(c_gold);
 
-            // 1. Проверка, использует ли язык вообще не-латиницу (русский, китайский, корейский)
-            bool isNonLatin = Lang.UsesNonLatinCharacters(Lang.CurrentLocale);
-
-            // 2. Собственный список языков, которые формально латинские, но Scarab с ними не справляется
-                        string[] badScarabLanguages = new string[] {
-                "pl",    
-                "cs",    
-                "sk",    
-                "de",    
-                "nl",    
-                "sv-se", 
-            };
-
-            bool isBadScarab = badScarabLanguages.Contains(Lang.CurrentLocale);
-
-            // 3. Включаем стандартный текст, если совпало хотя бы одно условие
-            useInternalTextDrawer = isNonLatin || isBadScarab;
-
-            if (!useInternalTextDrawer) {
-                fTitle.baseLineHeight        = ImGui.GetTextLineHeight();
-                fTitleGold.baseLineHeight    = ImGui.GetTextLineHeight();
-                fSubtitle.baseLineHeight     = ImGui.GetTextLineHeight();
-                fSubtitleGold.baseLineHeight = ImGui.GetTextLineHeight();
-            }
+            UpdateLanguageSettings();
 
             tooltipVTML   = new List<VTMLblock>();
 
