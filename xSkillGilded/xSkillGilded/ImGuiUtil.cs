@@ -391,7 +391,10 @@ namespace xSkillGilded {
             return resourceLoader.Sprite($"xskillgilded:textures/gui/skilltree/{cat}/{name}.png"); 
         }
 
-        public static float _ui(float v) { return v; }
+        public static float _ui(float v)
+        {
+            return v * uiScale;
+        }
 
         public static float lerpLinearTo(float a, float b, float t, float dt) {
             if(Math.Abs(a - b) <= t * dt) return b;

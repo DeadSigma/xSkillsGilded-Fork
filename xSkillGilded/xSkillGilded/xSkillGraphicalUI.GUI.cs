@@ -602,7 +602,7 @@ namespace xSkillGilded {
                         "fishfilleter"
                     };
 
-                // --- НАШ КАСТОМНЫЙ ТЕКСТ (ОТРИСОВКА ВНИЗУ) ---
+                // --- КАСТОМНЫЙ ТЕКСТ (ОТРИСОВКА ВНИЗУ) ---
                 float extraH = 0;
                 // Создаем список для хранения всех строчек текста
                 List<string> customLines = new List<string>();
@@ -675,7 +675,6 @@ namespace xSkillGilded {
 
                     drawSetColor(c_white);
                 }
-                // ------------------------------------------------
 
                 tooltipY += stepY;
 

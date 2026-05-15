@@ -26,9 +26,9 @@ namespace xSkillGilded {
         
         float timer  = 0;
         bool showing = true;
-        
-        float windowWidth  = _ui(560);
-        float windowHeight = _ui(160);
+
+        float windowWidth;
+        float windowHeight;
 
         public LevelPopup(ICoreClientAPI api, PlayerSkill skill) {
             this.api = api;
@@ -42,6 +42,10 @@ namespace xSkillGilded {
         public CallbackGUIStatus Draw(float deltaSecnds)
         {
             if (!showing) return CallbackGUIStatus.DontGrabMouse;
+
+            // Считаем актуальный размер для текущего кадра
+            windowWidth = _ui(560);
+            windowHeight = _ui(160);
 
             ImGuiViewportPtr viewport = ImGui.GetMainViewport();
 
