@@ -122,7 +122,7 @@ namespace xSkillGilded {
                 config = new ModConfig();
             }
 
-            api.Input.RegisterHotKey("xSkillGilded_v2", Lang.Get("xskillsgilded:hotkey-xSkillGilded_v2"), GlKeys.O, HotkeyType.GUIOrOtherControls);
+            api.Input.RegisterHotKey("xSkillGilded_v2", Lang.Get("xskillgilded:hotkey-xSkillGilded_v2"), GlKeys.O, HotkeyType.GUIOrOtherControls);
             api.Input.SetHotKeyHandler("xSkillGilded_v2", Toggle);
 
             imguiModSystem = api.ModLoader.GetModSystem<ImGuiModSystem>();
