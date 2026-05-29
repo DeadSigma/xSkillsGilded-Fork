@@ -778,7 +778,7 @@ namespace xSkillGilded {
                 
                 if (begin + i >= 0 && begin + i < valueCount) {
                     string _v = values[begin + i].ToString();
-                    if(percentageValues.Contains(i)) _v += "%%";
+                    if (percentageValues.Contains(i)) _v += "%";
 
                     str += $"<font color=\"#feae34\">{_v}</font>"; 
                 }
@@ -787,7 +787,7 @@ namespace xSkillGilded {
                     if(str.Length > 0) str += " > ";
 
                     string _v = values[next + i].ToString();
-                    if(percentageValues.Contains(i)) _v += "%%";
+                    if (percentageValues.Contains(i)) _v += "%";
 
                     str += $"<font color=\"#7ac62f\">{_v}</font>";
                 }
@@ -872,7 +872,7 @@ namespace xSkillGilded {
             float expBonus = skill.Skill.GetExperienceMultiplier(skill.PlayerSkillSet, false) - 1f;
             if(expBonus != 0f) {
 
-                string bonusText = (expBonus > 0 ? "+" : "-") + Math.Round(expBonus * 100f) + "%%";
+                string bonusText = (expBonus > 0 ? "+" : "-") + Math.Round(expBonus * 100f) + "%";
 
                 drawSetColor(expBonus > 0? c_lime : c_red);
                 Vector2 bonusTextSize = drawTextFont(fSubtitle, bonusText, x + w, y, HALIGN.Left);
@@ -881,8 +881,8 @@ namespace xSkillGilded {
                     float totalBonus = skill.Skill.GetExperienceMultiplier(skill.PlayerSkillSet, true) - 1f;
 
                     string desc = Lang.GetUnformatted("xskillgilded:expBonusDesc");
-                    string _bonusText     = (expBonus > 0? "+" : "-") + Math.Round(expBonus * 100f) + "%%";
-                    string totalBonusText = (totalBonus > 0? "+" : "-") + Math.Round(totalBonus * 100f) + "%%";
+                    string _bonusText     = (expBonus > 0? "+" : "-") + Math.Round(expBonus * 100f) + "%";
+                    string totalBonusText = (totalBonus > 0? "+" : "-") + Math.Round(totalBonus * 100f) + "%";
 
                     desc = string.Format(desc, VTML.WrapFont(_bonusText, expBonus > 0? "#7ac62f" : "#bf663f"), VTML.WrapFont(totalBonusText, totalBonus > 0? "#7ac62f" : "#bf663f"));
                         
