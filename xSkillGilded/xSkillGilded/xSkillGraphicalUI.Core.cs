@@ -84,7 +84,7 @@ namespace xSkillGilded {
 
             // 1. Проверка на не-латиницу и "проблемные" языки
             bool isNonLatin = Lang.UsesNonLatinCharacters(lastLocale);
-            string[] badScarabLanguages = new string[] { "pl", "cs", "sk", "de", "nl", "sv-se", "be" };
+            string[] badScarabLanguages = new string[] { "pl", "cs", "sk", "fr", "de", "nl", "sv-se", "be" };
             bool isBadScarab = badScarabLanguages.Contains(lastLocale);
 
             useInternalTextDrawer = isNonLatin || isBadScarab;
