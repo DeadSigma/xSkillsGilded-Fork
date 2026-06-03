@@ -866,12 +866,25 @@ namespace xSkillGilded
 
             if (ability.Name == "heavyarmorexpert")
             {
-                args[2] = Vintagestory.API.Config.Lang.Get("xskills:armor-heavy-dec");
-                args[3] = Vintagestory.API.Config.Lang.Get("xskills:armor-heavy-inc");
+                // 1. Собираем улучшения  подставляется в {2}
+                args[2] = string.Join(", ",
+                    Vintagestory.API.Config.Lang.Get("game:Healing effectivness"),
+                    Vintagestory.API.Config.Lang.Get("game:Hunger rate"));
+
+                // Собираем ухудшения  подставляется в {3}
+                args[3] = string.Join(", ",
+                    Vintagestory.API.Config.Lang.Get("game:Walk speed"),
+                    Vintagestory.API.Config.Lang.Get("game:Ranged Accuracy"),
+                    Vintagestory.API.Config.Lang.Get("game:Ranged Charge Speed"));
             }
             else if (ability.Name == "lightarmorexpert")
             {
-                args[1] = Vintagestory.API.Config.Lang.Get("xskills:armor-light-inc");
+                // Для лёгкой брони все характеристики идут в бонусы - подставляется в {1}
+                args[1] = string.Join(", ",
+                    Vintagestory.API.Config.Lang.Get("game:Healing effectivness"),
+                    Vintagestory.API.Config.Lang.Get("game:Hunger rate"),
+                    Vintagestory.API.Config.Lang.Get("game:Ranged Accuracy"),
+                    Vintagestory.API.Config.Lang.Get("game:Ranged Charge Speed"));
             }
 
             try
