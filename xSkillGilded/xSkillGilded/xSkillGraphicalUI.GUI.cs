@@ -497,8 +497,8 @@ namespace xSkillGilded
 
                     float unlearnPoint = currentPlayerSkill.PlayerSkillSet.UnlearnPoints;
                     float unlearnPointReq = xLevelingClient.GetPointsForUnlearn();
-                    float unlearnAmount = (float)Math.Floor(unlearnPoint / unlearnPointReq);
-                    float unlearnProgress = unlearnPoint / unlearnPointReq - unlearnAmount;
+                    float unlearnAmount = unlearnPointReq > 0f ? (float)Math.Floor(unlearnPoint / unlearnPointReq) : 0f;
+                    float unlearnProgress = unlearnPointReq > 0f ? (unlearnPoint / unlearnPointReq - unlearnAmount) : 0f;
                     float unx = sdx + sdw - _ui(8);
                     float uny = sdy;
 
@@ -507,12 +507,12 @@ namespace xSkillGilded
 
                     if (unlearnAmount > 0)
                     {
-                        Vector2 unlearnPoint_size = fSubtitle.CalcTextSize(unlearnAmount.ToString());
+                        Vector2 unlearnPoint_size = fSubtitle.CalcTextSize(((int)unlearnAmount).ToString());
                         drawSetColor(c_red, .3f);
                         drawImage9patch(Sprite("elements", "glow"), unx - unlearnPoint_size.X - 16, sdy - 12, unlearnPoint_size.X + 32, unlearnPoint_size.Y + 24, 15);
                         drawSetColor(c_white);
                     }
-                    drawTextFont(fSubtitle, unlearnAmount.ToString(), unx, sdy, HALIGN.Right);
+                    drawTextFont(fSubtitle, ((int)unlearnAmount).ToString(), unx, sdy, HALIGN.Right);
 
                     sdy += fSubtitle.getLineHeight();
                     drawProgressBar(unlearnProgress, sdx, sdy, sdw, _ui(4), c_dkgrey, c_red);
@@ -840,7 +840,7 @@ namespace xSkillGilded
                 if (begin + i >= 0 && begin + i < valueCount)
                 {
                     string _v = values[begin + i].ToString();
-                    if (percentageValues.Contains(i)) _v += "%";
+                    if (percentageValues.Contains(i)) _v += "%%";
 
                     str += $"<font color=\"#feae34\">{_v}</font>";
                 }
@@ -850,7 +850,7 @@ namespace xSkillGilded
                     if (str.Length > 0) str += " > ";
 
                     string _v = values[next + i].ToString();
-                    if (percentageValues.Contains(i)) _v += "%";
+                    if (percentageValues.Contains(i)) _v += "%%";
 
                     str += $"<font color=\"#7ac62f\">{_v}</font>";
                 }
@@ -915,8 +915,8 @@ namespace xSkillGilded
 
                 float unlearnPoint = currentPlayerSkill.PlayerSkillSet.UnlearnPoints;
                 float unlearnPointReq = xLevelingClient.GetPointsForUnlearn();
-                float unlearnAmount = (float)Math.Floor(unlearnPoint / unlearnPointReq);
-                string unlearnPointTitle = unlearnAmount.ToString();
+                float unlearnAmount = unlearnPointReq > 0f ? (float)Math.Floor(unlearnPoint / unlearnPointReq) : 0f;
+                string unlearnPointTitle = ((int)unlearnAmount).ToString();
 
                 float _sx = x + w - _ui(8);
                 Vector2 _s;
