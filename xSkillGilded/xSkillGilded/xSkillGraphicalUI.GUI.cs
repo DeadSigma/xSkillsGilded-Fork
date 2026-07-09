@@ -505,14 +505,17 @@ namespace xSkillGilded
                     drawSetColor(c_red);
                     drawTextFont(fSubtitle, Lang.GetUnformatted("xlib:unlearnpoints"), sdx, sdy);
 
-                    if (unlearnAmount > 0)
+                    // Показываем реальные накопленные очки
+                    string unlearnDisplay = unlearnPoint.ToString("0.##");
+
+                    if (unlearnPoint > 0) // Изменено с unlearnAmount на unlearnPoint
                     {
-                        Vector2 unlearnPoint_size = fSubtitle.CalcTextSize(((int)unlearnAmount).ToString());
+                        Vector2 unlearnPoint_size = fSubtitle.CalcTextSize(unlearnDisplay);
                         drawSetColor(c_red, .3f);
                         drawImage9patch(Sprite("elements", "glow"), unx - unlearnPoint_size.X - 16, sdy - 12, unlearnPoint_size.X + 32, unlearnPoint_size.Y + 24, 15);
                         drawSetColor(c_white);
                     }
-                    drawTextFont(fSubtitle, ((int)unlearnAmount).ToString(), unx, sdy, HALIGN.Right);
+                    drawTextFont(fSubtitle, unlearnDisplay, unx, sdy, HALIGN.Right);
 
                     sdy += fSubtitle.getLineHeight();
                     drawProgressBar(unlearnProgress, sdx, sdy, sdw, _ui(4), c_dkgrey, c_red);
@@ -913,10 +916,10 @@ namespace xSkillGilded
                 int abilityPoint = skill.AbilityPoints;
                 string skillPointTitle = abilityPoint.ToString();
 
-                float unlearnPoint = currentPlayerSkill.PlayerSkillSet.UnlearnPoints;
-                float unlearnPointReq = xLevelingClient.GetPointsForUnlearn();
-                float unlearnAmount = unlearnPointReq > 0f ? (float)Math.Floor(unlearnPoint / unlearnPointReq) : 0f;
-                string unlearnPointTitle = ((int)unlearnAmount).ToString();
+                float unlearnPoint = skill.PlayerSkillSet.UnlearnPoints;
+
+                // Форматируем до двух знаков после запятой (например, "0.5" или "1.25")
+                string unlearnPointTitle = unlearnPoint.ToString("0.##");
 
                 float _sx = x + w - _ui(8);
                 Vector2 _s;

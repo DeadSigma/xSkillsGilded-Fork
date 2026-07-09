@@ -38,6 +38,7 @@ namespace xSkillGilded
                 IntPtr dummyContext = ImGui.CreateContext();
                 ImGui.SetCurrentContext(dummyContext);
 
+                // Диапазон уже включает кириллицу (0x0400 - 0x04FF)
                 _latinExtendedRanges = new ushort[] {
                     0x0020, 0x00FF, 0x0100, 0x017F, 0x0400, 0x04FF, 0
                 };
@@ -55,6 +56,7 @@ namespace xSkillGilded
                         dict["pl"] = customRangePtr;
                         dict["cs"] = customRangePtr;
                         dict["sk"] = customRangePtr;
+                        dict["ru"] = customRangePtr; // Привязываем русский язык к нашему диапазону
 
                         // Назначаем полные/общие наборы символов
                         nint chineseRange = ImGui.GetIO().Fonts.GetGlyphRangesChineseFull();
@@ -104,24 +106,29 @@ namespace xSkillGilded
                             SuccessfullyLoadedFontName = Path.GetFileNameWithoutExtension(customFontPath);
                             api.Logger.Event($"[xSkillGilded] Успешно загружен кастомный шрифт пользователя: {customFontPath}");
                         }
-                        // Сценарий Б: Азиатский язык, используем встроенный 
+                        // Сценарий Б: Азиатский или Русский язык, используем встроенный 
                         else
                         {
                             string locale = Lang.CurrentLocale;
-                            if (locale == "zh-cn" || locale == "zh-tw" || locale == "ja" || locale == "ko")
+                            if (locale == "zh-cn" || locale == "zh-tw" || locale == "ja" || locale == "ko" || locale == "ru")
                             {
                                 string tempDir = Path.Combine(GamePaths.DataPath, "Cache", "xSkillGilded");
                                 Directory.CreateDirectory(tempDir);
 
-                                string tempPath = Path.Combine(tempDir, "cjk_font_temp.ttf");
+                                // Динамически определяем имя нужного шрифта
+                                string targetFontName = (locale == "ru") ? "mainfont.ttf" : "cjk_font.ttf";
+                                string tempFontName = targetFontName.Replace(".ttf", "_temp.ttf");
+                                string tempPath = Path.Combine(tempDir, tempFontName);
+
                                 bool fontFound = false;
                                 string modsDir = Path.Combine(GamePaths.DataPath, "Mods");
 
                                 if (Directory.Exists(modsDir))
                                 {
+                                    // Поиск в распакованных папках (для среды разработки)
                                     foreach (string dir in Directory.GetDirectories(modsDir))
                                     {
-                                        string testPath = Path.Combine(dir, "assets", "xskillgilded", "fonts", "cjk_font.ttf");
+                                        string testPath = Path.Combine(dir, "assets", "xskillgilded", "fonts", targetFontName);
                                         if (File.Exists(testPath))
                                         {
                                             File.Copy(testPath, tempPath, true);
@@ -130,6 +137,7 @@ namespace xSkillGilded
                                         }
                                     }
 
+                                    // Поиск внутри .zip архивов
                                     if (!fontFound)
                                     {
                                         foreach (string zipFile in Directory.GetFiles(modsDir, "*.zip"))
@@ -138,7 +146,7 @@ namespace xSkillGilded
                                             {
                                                 using (var archive = ZipFile.OpenRead(zipFile))
                                                 {
-                                                    var entry = archive.GetEntry("assets/xskillgilded/fonts/cjk_font.ttf");
+                                                    var entry = archive.GetEntry($"assets/xskillgilded/fonts/{targetFontName}");
                                                     if (entry != null)
                                                     {
                                                         entry.ExtractToFile(tempPath, true);
@@ -156,15 +164,19 @@ namespace xSkillGilded
                                 if (fontFound)
                                 {
                                     fontsSet.Add(tempPath);
-                                    SuccessfullyLoadedFontName = "cjk_font_temp";
-                                    api.Logger.Event("[xSkillGilded] Успешно распакован и загружен встроенный CJK шрифт.");
+                                    // Динамически задаем имя шрифта без расширения, чтобы PostPatcher применил правильный стиль
+                                    SuccessfullyLoadedFontName = Path.GetFileNameWithoutExtension(tempPath);
+                                    api.Logger.Event($"[xSkillGilded] Успешно распакован и загружен встроенный шрифт: {targetFontName}.");
+                                }
+                                else
+                                {
+                                    api.Logger.Warning($"[xSkillGilded] Не удалось найти встроенный шрифт {targetFontName} в ресурсах мода.");
                                 }
                             }
                         }
                     }
                     else
                     {
-                        // Если enableCustomFont == false, ничего не делаем
                         api.Logger.Event("[xSkillGilded] Custom fonts are disabled in the config. ImGui will use the default font instead.");
                     }
                 }
@@ -192,7 +204,6 @@ namespace xSkillGilded
         {
             base.AssetsLoaded(api);
 
-            // Если шрифт (пользовательский или встроенный) был успешно загружен в первом патчере
             if (!string.IsNullOrEmpty(VSImGuiFontPatcher.SuccessfullyLoadedFontName))
             {
                 try
@@ -206,13 +217,13 @@ namespace xSkillGilded
                         if (fontNameProp != null)
                         {
                             fontNameProp.SetValue(vsImGui.DefaultStyle, VSImGuiFontPatcher.SuccessfullyLoadedFontName);
-                            api.Logger.Event($"[xSkillGilded] Successfully switched the xSkillsGilded style to the font. '{VSImGuiFontPatcher.SuccessfullyLoadedFontName}'");
+                            api.Logger.Event($"[xSkillGilded] Successfully switched the xSkillsGilded style to the font: '{VSImGuiFontPatcher.SuccessfullyLoadedFontName}'");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    api.Logger.Error("[xSkillGilded]Error while switching FontName in AssetsLoaded: " + ex);
+                    api.Logger.Error("[xSkillGilded] Error while switching FontName in AssetsLoaded: " + ex);
                 }
             }
         }
