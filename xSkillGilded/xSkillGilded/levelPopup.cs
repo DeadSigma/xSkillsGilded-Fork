@@ -17,20 +17,23 @@ using XLib.XEffects;
 using XLib.XLeveling;
 using static xSkillGilded.ImGuiUtil;
 
-namespace xSkillGilded {
+namespace xSkillGilded
+{
 
-    public class LevelPopup {
+    public class LevelPopup
+    {
         ICoreClientAPI api;
         private ImGuiModSystem imguiModSystem;
         PlayerSkill skill;
-        
-        float timer  = 0;
+
+        float timer = 0;
         bool showing = true;
 
         float windowWidth;
         float windowHeight;
 
-        public LevelPopup(ICoreClientAPI api, PlayerSkill skill) {
+        public LevelPopup(ICoreClientAPI api, PlayerSkill skill)
+        {
             this.api = api;
             this.skill = skill;
 
@@ -43,18 +46,18 @@ namespace xSkillGilded {
         {
             if (!showing) return CallbackGUIStatus.DontGrabMouse;
 
-            // Считаем актуальный размер для текущего кадра
-            windowWidth = _ui(560);
-            windowHeight = _ui(160);
+            // Свой масштаб, а не тот, что остался от последней отрисовки окна навыков
+            uiScale = xSkillGraphicalUI.LevelPopupUiScale;
+            windowWidth = _ui(xSkillGraphicalUI.LevelPopupBaseWidth);
+            windowHeight = _ui(xSkillGraphicalUI.LevelPopupBaseHeight);
 
             ImGuiViewportPtr viewport = ImGui.GetMainViewport();
 
-            // Считаем позицию относительно реального положения окна игры на мониторе
-            float wx = viewport.Pos.X + (viewport.Size.X / 2) - (windowWidth / 2);
-            float wy = viewport.Pos.Y + _ui(8);
+            // Позиция из конфига (правится по хоткею), либо центр сверху, если игрок её не двигал
+            Vector2 pos = xSkillGraphicalUI.GetLevelPopupPos(viewport, windowWidth, windowHeight);
 
             ImGui.SetNextWindowSize(new(windowWidth, windowHeight));
-            ImGui.SetNextWindowPos(new(wx, wy));
+            ImGui.SetNextWindowPos(pos);
             ImGuiWindowFlags flags = ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoScrollbar
                  | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs;
 
@@ -106,21 +109,32 @@ namespace xSkillGilded {
             }
 
             timer += deltaSecnds;
-            if (timer >= 4f) showing = false;
+            if (timer >= 4f)
+            {
+                showing = false;
+
+                // Без отписки каждый ап уровня навсегда добавляет ещё один вызов Draw на кадр
+                // и держит этот объект живым: подписка на событие - сильная ссылка
+                imguiModSystem.Draw -= Draw;
+                imguiModSystem.Closed -= Close;
+            }
 
             return CallbackGUIStatus.DontGrabMouse;
         }
 
-        float smoothstep(float t) {
+        float smoothstep(float t)
+        {
             return t * t * (3f - 2f * t);
         }
 
-        float invLerp(float time, float from, float to) {
+        float invLerp(float time, float from, float to)
+        {
             float a = Math.Clamp((time - from) / (to - from), 0f, 1f);
             return smoothstep(a);
         }
 
-        float invLerp2(float time, float from0, float to0, float from1, float to1) {
+        float invLerp2(float time, float from0, float to0, float from1, float to1)
+        {
             float a = Math.Min(Math.Clamp((time - from0) / (to0 - from0), 0f, 1f),
                           1f - Math.Clamp((time - from1) / (to1 - from1), 0f, 1f));
             return smoothstep(a);

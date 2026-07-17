@@ -34,29 +34,13 @@ namespace xSkillGilded
                 UpdateLanguageSettings();
             }
 
-            ElementBounds window = api.Gui.WindowBounds;
-            IXPlatformInterface xPlatform = api.Forms;
-            Size2i size = xPlatform.GetScreenSize();
+            // Режим правки расположения рисует только силуэт окна и не пускает мышь в контент.
+            if (layoutEditMode) return DrawLayoutEdit();
 
-            // 1. Получаем главный Viewport игры
             ImGuiViewportPtr viewport = ImGui.GetMainViewport();
-            float screenW = viewport.Size.X;
-            float screenH = viewport.Size.Y;
 
-            uiScale = ClientSettings.GUIScale;
-            float padding = 64f;
-            float maxW = screenW - padding;
-            float maxH = screenH - padding;
-
-            float neededW = windowBaseWidth * uiScale;
-            float neededH = windowBaseHeight * uiScale;
-
-            if (neededW > maxW || neededH > maxH)
-            {
-                float scaleX = maxW / windowBaseWidth;
-                float scaleY = maxH / windowBaseHeight;
-                uiScale = Math.Min(scaleX, scaleY);
-            }
+            // uiScale (с учётом config.windowScale) + размер окна, см. xSkillGraphicalUI_LayoutEdit.cs
+            ComputeLayoutSize(viewport, out int windowWidth, out int windowHeight);
 
             if (!useInternalTextDrawer)
             {
@@ -71,14 +55,11 @@ namespace xSkillGilded
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0);
             ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0);
 
-            int windowWidth = (int)(windowBaseWidth * uiScale);
-            int windowHeight = (int)(windowBaseHeight * uiScale);
-
             ImGui.SetNextWindowSize(new Vector2(windowWidth, windowHeight));
 
             ImGui.SetNextWindowViewport(viewport.ID);
 
-            ImGui.SetNextWindowPos(viewport.GetCenter(), ImGuiCond.Always, new Vector2(0.5f, 0.5f));
+            ImGui.SetNextWindowPos(GetLayoutWindowPos(viewport, windowWidth, windowHeight), ImGuiCond.Always);
 
             ImGuiWindowFlags flags = ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoScrollbar
                  | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoBackground;

@@ -121,14 +121,29 @@ namespace xSkillGilded
                                 string tempPath = Path.Combine(tempDir, tempFontName);
 
                                 bool fontFound = false;
-                                string modsDir = Path.Combine(GamePaths.DataPath, "Mods");
+                                // Собираем все директории, где могут лежать моды
+                                List<string> searchDirectories = new List<string>();
 
-                                if (Directory.Exists(modsDir))
+                                string standardModsDir = Path.Combine(GamePaths.DataPath, "Mods");
+                                if (Directory.Exists(standardModsDir))
                                 {
-                                    // Поиск в распакованных папках (для среды разработки)
-                                    foreach (string dir in Directory.GetDirectories(modsDir))
+                                    searchDirectories.Add(standardModsDir);
+                                }
+
+                                string serverModsDir = Path.Combine(GamePaths.DataPath, "ModsByServer");
+                                if (Directory.Exists(serverModsDir))
+                                {
+                                    // Добавляем все папки серверов из ModsByServer
+                                    searchDirectories.AddRange(Directory.GetDirectories(serverModsDir));
+                                }
+
+                                // Ищем шрифт по всем собранным директориям
+                                foreach (string dir in searchDirectories)
+                                {
+                                    // Поиск в распакованных папках
+                                    foreach (string subDir in Directory.GetDirectories(dir))
                                     {
-                                        string testPath = Path.Combine(dir, "assets", "xskillgilded", "fonts", targetFontName);
+                                        string testPath = Path.Combine(subDir, "assets", "xskillgilded", "fonts", targetFontName);
                                         if (File.Exists(testPath))
                                         {
                                             File.Copy(testPath, tempPath, true);
@@ -136,29 +151,28 @@ namespace xSkillGilded
                                             break;
                                         }
                                     }
+                                    if (fontFound) break;
 
                                     // Поиск внутри .zip архивов
-                                    if (!fontFound)
+                                    foreach (string zipFile in Directory.GetFiles(dir, "*.zip"))
                                     {
-                                        foreach (string zipFile in Directory.GetFiles(modsDir, "*.zip"))
+                                        try
                                         {
-                                            try
+                                            using (var archive = ZipFile.OpenRead(zipFile))
                                             {
-                                                using (var archive = ZipFile.OpenRead(zipFile))
+                                                var entry = archive.GetEntry($"assets/xskillgilded/fonts/{targetFontName}");
+                                                if (entry != null)
                                                 {
-                                                    var entry = archive.GetEntry($"assets/xskillgilded/fonts/{targetFontName}");
-                                                    if (entry != null)
-                                                    {
-                                                        entry.ExtractToFile(tempPath, true);
-                                                        fontFound = true;
-                                                        break;
-                                                    }
+                                                    entry.ExtractToFile(tempPath, true);
+                                                    fontFound = true;
+                                                    break;
                                                 }
                                             }
-                                            catch { }
-                                            if (fontFound) break;
                                         }
+                                        catch { }
+                                        if (fontFound) break;
                                     }
+                                    if (fontFound) break; // Прерываем внешний цикл, если шрифт найден
                                 }
 
                                 if (fontFound)
