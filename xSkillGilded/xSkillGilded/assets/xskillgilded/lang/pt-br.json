@@ -1,3 +1,8 @@
-﻿{
-  "hotkey-xSkillGilded_v2": "xSkills Gilded: Mostrar/Ocultar menu de habilidades"
+{
+    "hotkey-xSkillGilded_v2": "xSkills Gilded: Mostrar/Ocultar menu de habilidades",
+    "xskillgilded:layout-edit-el-effectbox": "Efeitos",
+    "xskillgilded:layout-edit-el-levelpopup": "Novo nível",
+    "xskillgilded:layout-edit-el-window": "Janela de habilidades",
+    "xskillgilded:layout-edit-hint": "Arraste com o mouse · roda - redimensionar · {0} - salvar e sair",
+    "xskillgilded:layout-edit-title": "Editar layout"
 }

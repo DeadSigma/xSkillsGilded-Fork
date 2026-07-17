@@ -1,3 +1,8 @@
-﻿{
-  "hotkey-xSkillGilded_v2": "xSkills Gilded: Afișează/Ascunde meniul abilităților"
+{
+    "hotkey-xSkillGilded_v2": "xSkills Gilded: Afișează/Ascunde meniul abilităților",
+    "xskillgilded:layout-edit-el-effectbox": "Efecte",
+    "xskillgilded:layout-edit-el-levelpopup": "Nivel nou",
+    "xskillgilded:layout-edit-el-window": "Fereastra abilităților",
+    "xskillgilded:layout-edit-hint": "Trage cu mouse-ul · rotița - schimbă dimensiunea · {0} - salvează și ieși",
+    "xskillgilded:layout-edit-title": "Editează aspectul"
 }

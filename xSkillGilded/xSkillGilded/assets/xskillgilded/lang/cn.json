@@ -1,3 +1,8 @@
-﻿{
-  "hotkey-xSkillGilded_v2": "xSkills Gilded：显示/隐藏技能菜单"
+{
+    "hotkey-xSkillGilded_v2": "xSkills Gilded：显示/隐藏技能菜单",
+    "xskillgilded:layout-edit-el-effectbox": "效果",
+    "xskillgilded:layout-edit-el-levelpopup": "新等级",
+    "xskillgilded:layout-edit-el-window": "技能窗口",
+    "xskillgilded:layout-edit-hint": "拖动鼠标 · 滚轮 - 调整大小 · {0} - 保存并退出",
+    "xskillgilded:layout-edit-title": "编辑布局"
 }
