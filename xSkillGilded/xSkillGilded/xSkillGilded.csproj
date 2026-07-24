@@ -87,7 +87,7 @@
 		<Folder Include="assets\xskillgilded\config\" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<Target Name="PostRebuild" AfterTargets="Rebuild">
 		<PropertyGroup>
 			<ModName>$([System.Text.RegularExpressions.Regex]::Match('$([System.IO.File]::ReadAllText("$(ProjectDir)modinfo.json"))', '"name"\s*:\s*"([^"]+)"').Groups[1].Value)</ModName>
 			<ModVersion>$([System.Text.RegularExpressions.Regex]::Match('$([System.IO.File]::ReadAllText("$(ProjectDir)modinfo.json"))', '"version"\s*:\s*"([^"]+)"').Groups[1].Value)</ModVersion>

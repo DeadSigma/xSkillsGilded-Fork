@@ -74,7 +74,11 @@ namespace xSkillGilded
 
                 drawImage(Sprite("elements", "bg"), 0, 0, windowWidth, windowHeight);
                 float padd = _ui(contentPadding);
-                float contentWidth = windowWidth - _ui(tooltipWidth) - padd * 2;
+
+                // Расширение окна с описанием для инфо (стандартные 400)
+                float currentTooltipWidth = page == "_CustomInfo" ? 750 : tooltipWidth;
+                float contentWidth = windowWidth - _ui(currentTooltipWidth) - padd * 2;
+
                 float deltaTime = stopwatch.ElapsedMilliseconds / 1000f;
                 stopwatch.Restart();
 
@@ -116,6 +120,37 @@ namespace xSkillGilded
 
                 drawSetColor(c_white, _alpha);
                 drawImage(page == "_Specialize" ? Sprite("elements", "meta_spec_selected") : Sprite("elements", "meta_spec"), btxc - _ui(24 / 2), bty + 4, _ui(24), _ui(24));
+                drawSetColor(c_white);
+                btx += _btsw;
+
+                // Вкладка для информации
+                float infoBtxc = btx + _btsw / 2;
+                float infoAlpha = 1f;
+
+                if (page == "_CustomInfo")
+                {
+                    drawImage(Sprite("elements", "tab_sep_selected"), infoBtxc - btww, bty + bth - 4, btww * 2, 4);
+                    infoAlpha = 1f;
+                }
+                else if (mouseHover(btx, bty, btx + _btsw, bty + bth))
+                {
+                    _hoveringID = "_CustomInfo";
+                    drawImage(Sprite("elements", "tab_sep_hover"), infoBtxc - btww, bty + bth - 4, btww * 2, 4);
+                    infoAlpha = 1f;
+                    if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+                    {
+                        setPage("_CustomInfo"); // Переключаемся на новую страницу
+                        api.Gui.PlaySound(new AssetLocation("xskillgilded", "sounds/page.ogg"), false, .3f);
+                    }
+                }
+                else
+                {
+                    drawImage(Sprite("elements", "tab_sep"), infoBtxc - btww, bty + bth - 4, btww * 2, 4);
+                    infoAlpha = .5f;
+                }
+
+                drawSetColor(c_white, infoAlpha);
+                drawImage(page == "_CustomInfo" ? Sprite("elements", "meta_info_selected") : Sprite("elements", "meta_info"), infoBtxc - _ui(24 / 2), bty + 4, _ui(24), _ui(24));
                 drawSetColor(c_white);
                 btx += _btsw;
 
@@ -269,14 +304,21 @@ namespace xSkillGilded
 
                 ImGui.SetCursorPos(new(abx, aby));
 
-                // Выносим переменную сюда, чтобы она была доступна во всем методе
+                // Выносим переменную сюда, чтобы она была доступна во всём методе
                 AbilityButton _hoveringButton = null;
 
                 ImGui.BeginChild("Ability", new(abw, abh), false, flags);
                 try
                 {
-                    float offx = ofmx + abw / 2;
-                    float offy = ofmy + abh / 2;
+                    if (page == "_CustomInfo")
+                    {
+                        // Отрисовка меню с инфой
+                        DrawCustomInfoCenter(abw, abh);
+                    }
+                    else
+                    {
+                        float offx = ofmx + abw / 2;
+                        float offy = ofmy + abh / 2;
 
                     float lvx = _ui(64);
 
@@ -443,9 +485,10 @@ namespace xSkillGilded
 
                     } // конец проверки ExclusiveAbilityRequirement
                 }
+                }
                 finally
                 {
-                    ImGui.EndChild(); // Гарантированное закрытие РЕАЛЬНОГО окна
+                    ImGui.EndChild(); // Гарантированное закрытие реального окна
                 }
 
                 windowPosX = windowX;
@@ -470,6 +513,11 @@ namespace xSkillGilded
                     }
 
 
+                }
+                else if (page == "_CustomInfo")
+                {
+                    // Отрисовывка левой части меню
+                    DrawCustomInfoLeft(sdx, ref sdy, sdw);
                 }
                 else
                 {
@@ -558,9 +606,9 @@ namespace xSkillGilded
                 #endregion
 
                 #region Tooltip
-                float tooltipX = windowWidth - tooltipWidth - padd;
+                float tooltipX = windowWidth - currentTooltipWidth - padd;
                 float tooltipY = sky + skh + _ui(32);
-                float tooltipW = tooltipWidth - padd;
+                float tooltipW = currentTooltipWidth - padd;
                 float tooltipH = windowHeight - tooltipY - padd;
 
                 drawImage(Sprite("elements", "tooltip_sep_v"), tooltipX - _ui(16), tooltipY, 2, tooltipH);
@@ -568,20 +616,30 @@ namespace xSkillGilded
                 if (hoveringTooltip != null)
                 {
                     tooltipY += fTitleGold.getLineHeight();
+
+                    // Включаем нативное масштабирование ImGui
+                    if (page == "_CustomInfo") ImGui.SetWindowFontScale(1.4f);
+
                     drawTextFont(fTitleGold, hoveringTooltip.Title, tooltipX + _ui(8), tooltipY, HALIGN.Left, VALIGN.Bottom);
+
+                    // Сбрасываем обратно
+                    if (page == "_CustomInfo") ImGui.SetWindowFontScale(1.0f);
 
                     tooltipY += _ui(2);
                     drawProgressBar(0, tooltipX, tooltipY, tooltipW, _ui(4), c_dkgrey, c_lime);
                     tooltipY += _ui(12);
 
-                    // float h = drawTextWrap(hoveringTooltip.Description, tooltipX + 8, tooltipY, HALIGN.Left, VALIGN.Top, tooltipW - 16);
                     if (currentTooltip != hoveringTooltip.Description)
                     {
                         tooltipVTML = VTML.parseVTML(hoveringTooltip.Description);
                         currentTooltip = hoveringTooltip.Description;
                     }
 
+                    if (page == "_CustomInfo") ImGui.SetWindowFontScale(1.4f);
+
                     float h = drawTextVTML(tooltipVTML, tooltipX + _ui(8), tooltipY, tooltipW - _ui(16));
+
+                    if (page == "_CustomInfo") ImGui.SetWindowFontScale(1.0f);
 
                 }
                 else if (_hoveringButton != null)
@@ -641,7 +699,7 @@ namespace xSkillGilded
                         "fishfilleter"
                     };
 
-                    // --- КАСТОМНЫЙ ТЕКСТ (ОТРИСОВКА ВНИЗУ) ---
+                    // КАСТОМНЫЙ ТЕКСТ (ОТРИСОВКА ВНИЗУ)
                     float extraH = 0;
                     // Создаем список для хранения всех строчек текста
                     List<string> customLines = new List<string>();
@@ -842,7 +900,7 @@ namespace xSkillGilded
                 v[i] = str;
             }
 
-            // --- ФИКС ДЛЯ ПЕРКОВ БРОНИ И СЛОЖНЫХ ОПИСАНИЙ ---
+            // ФИКС ДЛЯ ПЕРКОВ БРОНИ И СЛОЖНЫХ ОПИСАНИЙ
             object[] args = new object[10];
             for (int i = 0; i < 10; i++) args[i] = "";
 

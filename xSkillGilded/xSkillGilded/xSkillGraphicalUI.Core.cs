@@ -84,12 +84,9 @@ namespace xSkillGilded
         {
             lastLocale = Lang.CurrentLocale;
 
-            // 1. Проверка на не-латиницу и "проблемные" языки
-            bool isNonLatin = Lang.UsesNonLatinCharacters(lastLocale);
-            string[] badScarabLanguages = new string[] { "pl", "cs", "sk", "fr", "de", "nl", "sv-se", "be" };
-            bool isBadScarab = badScarabLanguages.Contains(lastLocale);
-
-            useInternalTextDrawer = isNonLatin || isBadScarab;
+            // Красивый scarab-шрифт есть только для английского
+            // Для всех остальных языков переключаемся на встроенный отрисовщик ImGui, который рисует текст системным шрифтом, загруженным в VSImGuiFontPatcher
+            useInternalTextDrawer = lastLocale != "en";
 
             if (!useInternalTextDrawer)
             {
@@ -266,6 +263,18 @@ namespace xSkillGilded
                 metaPage = true;
 
                 setPageContentList(specializeGroups);
+                return;
+            }
+
+
+            //Вкладка с инфой
+            if (page == "_CustomInfo")
+            {
+                this.page = "_CustomInfo";
+                metaPage = true;
+                abilityButtons = new Dictionary<string, AbilityButton>();
+                if (levelRequirementBars != null) levelRequirementBars.Clear();
+                if (decorationLines != null) decorationLines.Clear();
                 return;
             }
 

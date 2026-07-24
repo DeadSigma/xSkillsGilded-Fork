@@ -18,9 +18,9 @@
     "unlearnDesc": "Puoi disapprendere un'abilità <font color=\"feae34\">facendo clic destro</font> sull'abilità.<br><br>Il disapprendimento richiede un punto di disapprendimento, ottenibile usando determinati oggetti (vedi manuale per dettagli).<br><br>Il disapprendimento ha un tempo di recupero di <font color=\"feae34\">{0}</font> prima di poterlo fare di nuovo.",
     "unlearnPoints": "Punti di disapprendimento",
     "unlearnTitle": "Disapprendi",
-    "xskillgilded:layout-edit-el-effectbox": "Effetti",
-    "xskillgilded:layout-edit-el-levelpopup": "Nuovo livello",
-    "xskillgilded:layout-edit-el-window": "Finestra abilità",
-    "xskillgilded:layout-edit-hint": "Trascina con il mouse · rotella - ridimensiona · {0} - salva ed esci",
-    "xskillgilded:layout-edit-title": "Modifica layout"
+    "layout-edit-el-effectbox": "Effetti",
+    "layout-edit-el-levelpopup": "Nuovo livello",
+    "layout-edit-el-window": "Finestra abilità",
+    "layout-edit-hint": "Trascina con il mouse · rotella - ridimensiona · {0} - salva ed esci",
+    "layout-edit-title": "Modifica layout"
 }
