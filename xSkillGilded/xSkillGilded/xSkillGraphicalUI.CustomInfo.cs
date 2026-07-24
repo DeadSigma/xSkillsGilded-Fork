@@ -14,7 +14,7 @@ namespace xSkillGilded
 
         private void DrawCustomInfoCenter(float abw, float abh)
         {
-            float rowW = abw - _ui(32);
+            float rowW = abw - _ui(65);
             // Высота строк
             float rowH = _ui(100);
             float startY = _ui(100);
