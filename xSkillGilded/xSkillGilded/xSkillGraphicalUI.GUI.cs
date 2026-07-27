@@ -602,7 +602,14 @@ namespace xSkillGilded
                     hoveringTooltip = new(Lang.GetUnformatted("xlib:sparringmode"), Lang.GetUnformatted("xlib:sparring-desc"));
                 }
 
-                drawTextFont(fSubtitle, "Spar", actbx + actbw / 2, actby + actbh - _ui(4), HALIGN.Center, VALIGN.Bottom);
+                drawTextFont(
+                    fSubtitle,
+                    Lang.Get("xskillgilded:ui-spar"), 
+                    actbx + actbw / 2,
+                    actby + actbh - _ui(4),
+                    HALIGN.Center,
+                    VALIGN.Bottom
+                );
                 #endregion
 
                 #region Tooltip

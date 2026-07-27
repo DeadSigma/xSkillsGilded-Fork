@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Vintagestory.API.Client;
+using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.Client.NoObf;
 using VSImGui;
@@ -87,11 +88,13 @@ namespace xSkillGilded
                 Vector2 lvUpText_s = drawTextFont(fTitleGold, lvUpText, windowWidth / 2, windowHeight / 2 - _ui(16), HALIGN.Center, VALIGN.Bottom);
                 drawSetColor(c_white);
 
+              
+
                 // Правильный ID хоткея и защита от вылета
                 var hk = api.Input.GetHotKeyByCode("xSkillGilded_v2");
                 string hotkeyText = hk != null
-                    ? $"Press {hk.CurrentMapping.ToString()} to open skill tree."
-                    : "Press hotkey to open skill tree.";
+                    ? Lang.Get("xskillgilded:skilltree-hotkey-mapped", hk.CurrentMapping.ToString())
+                    : Lang.Get("xskillgilded:skilltree-hotkey-unmapped");
 
                 drawSetColor(c_white, invLerp2(timer, .3f, .6f, 3.5f, 4f) * .8f);
                 Vector2 hotkeyText_s = drawTextFont(fSubtitle, hotkeyText, windowWidth / 2, windowHeight / 2 + _ui(16), HALIGN.Center, VALIGN.Top);
