@@ -1111,7 +1111,6 @@ namespace xSkillGilded
     {
         public string RawName { get; set; }
         public LoadedTexture Texture { get; set; }
-        public string Name => Lang.Get($"xskills:ability-{RawName}");
         public PlayerAbility Ability { get; set; }
         public List<VTMLblock> Description { get; set; }
 
@@ -1123,6 +1122,52 @@ namespace xSkillGilded
 
         public float glowAlpha = 0;
         public float drawTierWidth = 0;
+
+        private string cachedName = null;
+        public string Name
+        {
+            get
+            {
+                if (cachedName != null) return cachedName;
+
+                List<string> keysToTry = new List<string>
+            {
+                $"xskills:ability-{RawName}",
+                $"ability-{RawName}",         
+                $"game:ability-{RawName}"
+            };
+
+                if (xSkillGraphicalUI.api != null)
+                {
+                    foreach (var mod in xSkillGraphicalUI.api.ModLoader.Mods)
+                    {
+                        keysToTry.Add($"{mod.Info.ModID}:ability-{RawName}");
+                    }
+                }
+
+                foreach (string key in keysToTry)
+                {
+                    string translated = Lang.Get(key);
+
+                    if (translated != key && !string.IsNullOrEmpty(translated))
+                    {
+                        cachedName = translated;
+                        return cachedName;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(RawName))
+                {
+                    cachedName = char.ToUpper(RawName[0]) + RawName.Substring(1);
+                }
+                else
+                {
+                    cachedName = RawName;
+                }
+
+                return cachedName;
+            }
+        }
 
         public AbilityButton(PlayerAbility ability)
         {

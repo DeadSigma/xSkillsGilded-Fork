@@ -28,7 +28,7 @@ namespace xSkillGilded
         public static ModConfig config;
         public const string configFileName = "xskillsgilded.json";
         private string lastLocale = "";
-        private ICoreClientAPI api;
+        internal static ICoreClientAPI api;
         private ImGuiModSystem imguiModSystem;
 
         XLeveling xLeveling;
@@ -108,7 +108,7 @@ namespace xSkillGilded
         }
         public override void StartClientSide(ICoreClientAPI api)
         {
-            this.api = api;
+            xSkillGraphicalUI.api = api;
             resourceLoader.setApi(api);
 
             try
