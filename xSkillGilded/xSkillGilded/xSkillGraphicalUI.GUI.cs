@@ -683,7 +683,7 @@ namespace xSkillGilded
                         "magnetichook", "doublehook", "baitmaster", "strongline",
                         "carefuldigger", "carefullumberjack", "carefulminer",
                         "cultivatedseeds", "stonecutter", "feeder", "duplicator",
-                        "jackpot", "happymeal", "finishingtouch", "fastpotter", "carefulshooter"
+                        "jackpot", "happymeal", "finishingtouch", "fastpotter", "masshusbandry", "carefulshooter", "breeder", "preserver", "tanner", "rancher"
                     };
 
                     // Перки на бонус/ Добычу (Увеличение лута, скорости, ХП)
