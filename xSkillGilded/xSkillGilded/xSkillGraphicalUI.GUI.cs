@@ -683,7 +683,7 @@ namespace xSkillGilded
                         "magnetichook", "doublehook", "baitmaster", "strongline",
                         "carefuldigger", "carefullumberjack", "carefulminer",
                         "cultivatedseeds", "stonecutter", "feeder", "duplicator",
-                        "jackpot", "happymeal", "finishingtouch", "fastpotter", "masshusbandry", "carefulshooter", "breeder", "preserver", "tanner", "rancher"
+                        "jackpot", "happymeal", "finishingtouch", "fastpotter", "masshusbandry", "carefulshooter",  "preserver", "tanner", "rancher"
                     };
 
                     // Перки на бонус/ Добычу (Увеличение лута, скорости, ХП)
@@ -694,7 +694,7 @@ namespace xSkillGilded
                         "lumberjack", "moreladders", "stonebreaker", "oreminer",
                         "gemstoneminer", "butcher", "furrier", "bonebreaker",
                         "looter", "salvager", "dilution", "longlife", "hammerexpert",
-                        "shovelexpert", "axeexpert", "pickaxeexpert", "fastfood", "steadyhelm", "steadyreins"
+                        "shovelexpert", "axeexpert", "pickaxeexpert", "fastfood", "steadyhelm", "steadyreins", "breeder"
                     };
 
                     // Перки на урон и защиту
@@ -746,7 +746,9 @@ namespace xSkillGilded
                                 int maxBonus = Math.Max(1, Math.Min(5, ability.PlayerSkill.Level));
                                 string secondaryText = Vintagestory.API.Config.Lang.Get("xskills:perk-maxbonus", maxBonus);
 
-                                // Разбиваем текст по символу переноса (\n) и добавляем в список
+                                primaryText = primaryText.Replace("%", "%%");
+                                secondaryText = secondaryText.Replace("%", "%%");
+
                                 customLines.AddRange(primaryText.Split('\n'));
                                 customLines.AddRange(secondaryText.Split('\n'));
                             }
@@ -754,6 +756,8 @@ namespace xSkillGilded
                             // Добавляем текст для остальных перков (если это не maxBonus)
                             if (primaryText != null && !maxBonusAbilities.Contains(abilityName))
                             {
+                                primaryText = primaryText.Replace("%", "%%");
+
                                 customLines.AddRange(primaryText.Split('\n'));
                             }
 
