@@ -17,8 +17,12 @@ namespace xSkillGilded
         public int effectBoxOrientation { get; set; } = 0;
 
         public bool EnableCustomFont { get; set; } = true;
-        public string _comment_CustomFontPath { get; set; } = "Optional: absolute path to a .ttf font file. Example: C:\\Windows\\Fonts\\simhei.ttf (Use double slashes!)";
+        public string _comment_CustomFontPath { get; set; } = "Optional: absolute path to a .ttf font. Windows: C:\\Windows\\Fonts\\simhei.ttf | Linux: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf (single forward slashes). Flatpak: path is resolved inside the sandbox - use fonts under /app/extra/vintagestory/assets or run 'flatpak run --command=fc-list <appid>' to list them";
         public string CustomFontPath { get; set; } = "";
+
+        // scarab есть только для английского - этот флаг выключает его и там, рисуя всё системным ImGui-шрифтом
+        public string _comment_ForceDisableScarabFont { get; set; } = "If true - disables the baked scarab font even in English and uses the ImGui system font everywhere. This is useful if you have a 4K monitor and want to scale the text.";
+        public bool ForceDisableScarabFont { get; set; } = false;
 
         /// <summary>Игрок хоть раз двигал окно. Пока false - окно центрируется, как раньше</summary>
         public bool windowPosSet = false;

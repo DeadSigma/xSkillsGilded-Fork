@@ -694,7 +694,7 @@ namespace xSkillGilded
                         "lumberjack", "moreladders", "stonebreaker", "oreminer",
                         "gemstoneminer", "butcher", "furrier", "bonebreaker",
                         "looter", "salvager", "dilution", "longlife", "hammerexpert",
-                        "shovelexpert", "axeexpert", "pickaxeexpert", "fastfood", "steadyhelm", "steadyreins", "breeder"
+                        "shovelexpert", "axeexpert", "pickaxeexpert", "fastfood", "steadyhelm", "steadyreins"
                     };
 
                     // Перки на урон и защиту
@@ -719,7 +719,7 @@ namespace xSkillGilded
                         string abilityName = ability.Ability.Name;
 
                         // Проверяем, есть ли перк хоть в одной из категорий
-                        if (chanceAbilities.Contains(abilityName) || bonusAbilities.Contains(abilityName) || damageAbilities.Contains(abilityName) || maxBonusAbilities.Contains(abilityName))
+                        if (chanceAbilities.Contains(abilityName) || bonusAbilities.Contains(abilityName) || damageAbilities.Contains(abilityName) || maxBonusAbilities.Contains(abilityName) || abilityName == "breeder")
                         {
                             int baseVal = ability.Ability.ValuesPerTier > 0 ? ability.Ability.Value(tier, 0) : 0;
                             int bonusValue = ability.Ability.ValuesPerTier > 1 ? ability.Ability.Value(tier, 1) : 0;
@@ -747,10 +747,17 @@ namespace xSkillGilded
                                 string secondaryText = Vintagestory.API.Config.Lang.Get("xskills:perk-maxbonus", maxBonus);
 
                                 primaryText = primaryText.Replace("%", "%%");
-                                secondaryText = secondaryText.Replace("%", "%%");
 
                                 customLines.AddRange(primaryText.Split('\n'));
                                 customLines.AddRange(secondaryText.Split('\n'));
+                            }
+
+                            else if (abilityName == "breeder")
+                            {
+                                int maxVal = ability.Ability.ValuesPerTier > 3 ? ability.Ability.Value(tier, 3) : 60;
+                                int displayVal = Math.Min(baseVal + bonusFromLevel, maxVal);
+
+                                primaryText = Vintagestory.API.Config.Lang.Get("xskills:perk-bonus", displayVal, baseVal, bonusFromLevel);
                             }
 
                             // Добавляем текст для остальных перков (если это не maxBonus)

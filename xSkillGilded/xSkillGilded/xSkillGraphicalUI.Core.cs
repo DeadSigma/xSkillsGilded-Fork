@@ -26,7 +26,7 @@ namespace xSkillGilded
     public partial class xSkillGraphicalUI : ModSystem
     {
         public static ModConfig config;
-        public const string configFileName = "xskillsgilded.json";
+        public const string configFileName = "XLeveling/gui/xSkillsGilded.json";
         private string lastLocale = "";
         internal static ICoreClientAPI api;
         private ImGuiModSystem imguiModSystem;
@@ -84,9 +84,8 @@ namespace xSkillGilded
         {
             lastLocale = Lang.CurrentLocale;
 
-            // Красивый scarab-шрифт есть только для английского
-            // Для всех остальных языков переключаемся на встроенный отрисовщик ImGui, который рисует текст системным шрифтом, загруженным в VSImGuiFontPatcher
-            useInternalTextDrawer = lastLocale != "en";
+            // scarab только для английского - при флаге уходим на ImGui-шрифт даже там
+            useInternalTextDrawer = config.ForceDisableScarabFont || lastLocale != "en";
 
             if (!useInternalTextDrawer)
             {

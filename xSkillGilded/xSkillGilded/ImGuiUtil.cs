@@ -68,8 +68,8 @@ namespace xSkillGilded {
             }
 
             ImGui.PushStyleColor(ImGuiCol.Text, drawCurrentColor);
-            ImGui.SetCursorPos(new ( _x, _y ));
-            ImGui.Text(text);
+            ImGui.SetCursorPos(new(_x, _y));
+            ImGui.TextUnformatted(text);
             ImGui.PopStyleColor();
 
             return textSize;
@@ -153,8 +153,8 @@ namespace xSkillGilded {
                     case HALIGN.Right:  _x = x - ImGui.CalcTextSize(line).X;     break;
                 }
 
-                ImGui.SetCursorPos(new (_x, _y));
-                ImGui.Text(line);
+                ImGui.SetCursorPos(new(_x, _y));
+                ImGui.TextUnformatted(line);
                 _y += ImGui.GetTextLineHeight();
             }
             ImGui.PopStyleColor();
@@ -254,8 +254,8 @@ namespace xSkillGilded {
                         height += lineHeight;
                     }
 
-                    ImGui.SetCursorPos(new ( _x, _y ));
-                    ImGui.Text(word);
+                    ImGui.SetCursorPos(new(_x, _y));
+                    ImGui.TextUnformatted(word.Replace("%%", "%"));
 
                     currLine += textSize.X;
                     _x += textSize.X;
